@@ -30,6 +30,18 @@ RUN mkdir /var/run/clamav && \
 
 # av configuration update
 RUN sed -i 's/^Foreground .*$/Foreground true/g' /etc/clamav/clamd.conf && \
+    if ! [ -z $StreamMaxLength ]; then
+        sed -i 's/^StreamMaxLength /#StreamMaxLength /g' /etc/clamav/clamd.conf;
+        echo "StreamMaxLength $StreamMaxLength" >> /etc/clamav/clamd.conf;
+    fi && \
+    if ! [ -z $MaxScanSize ]; then
+        sed -i 's/^MaxScanSize /#MaxScanSize /g' /etc/clamav/clamd.conf;
+        echo "MaxScanSize $MaxScanSize" >> /etc/clamav/clamd.conf;
+    fi && \
+    if ! [ -z $MaxFileSize ]; then
+        sed -i 's/^MaxFileSize /#MaxFileSize /g' /etc/clamav/clamd.conf;
+        echo "MaxFileSize $MaxFileSize" >> /etc/clamav/clamd.conf;
+    fi && \
     echo "TCPSocket 3310" >> /etc/clamav/clamd.conf && \
     if ! [ -z $HTTPProxyServer ]; then echo "HTTPProxyServer $HTTPProxyServer" >> /etc/clamav/freshclam.conf; fi && \
     if ! [ -z $HTTPProxyPort   ]; then echo "HTTPProxyPort $HTTPProxyPort" >> /etc/clamav/freshclam.conf; fi && \
